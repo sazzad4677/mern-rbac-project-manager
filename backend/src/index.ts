@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import { env } from './env';
+import { connectDB } from './config/db';
 
 const app = express();
 
@@ -13,6 +14,16 @@ app.get('/', (req, res) => {
     res.json({ message: 'Hello from Strict Node.js Backend!' });
 });
 
-app.listen(env.PORT, () => {
-    console.log(`Server is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
-});
+const startServer = async () => {
+    try {
+        await connectDB();
+        app.listen(env.PORT, () => {
+            console.log(`Server is running on port ${env.PORT} in ${env.NODE_ENV} mode`);
+        });
+    } catch (error) {
+        console.error('Failed to start server:', error);
+        process.exit(1);
+    }
+};
+
+startServer();
