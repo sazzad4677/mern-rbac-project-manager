@@ -6,6 +6,8 @@ import { connectDB } from './config/db';
 import { AppError } from './utils/AppError';
 import { globalErrorHandler } from './middlewares/error.middleware';
 
+import { authRouter } from './routes/auth.routes';
+
 const app = express();
 
 app.use(helmet());
@@ -15,6 +17,9 @@ app.use(express.json());
 app.get('/', (req, res) => {
     res.json({ message: 'Hello from Strict Node.js Backend!' });
 });
+
+// Routes
+app.use('/auth', authRouter);
 
 // Handle unhandled routes
 app.use((req, res, next) => {
