@@ -13,7 +13,7 @@
   },
   "include": [
     "src/**/*",
-    "src/scripts"
+    "scripts"
   ],
   "exclude": [
     "node_modules",
