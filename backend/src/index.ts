@@ -7,6 +7,7 @@ import { AppError } from './utils/AppError';
 import { globalErrorHandler } from './middlewares/error.middleware';
 
 import { authRouter } from './routes/auth.routes';
+import { userRouter } from './routes/user.routes';
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/auth', authRouter);
+app.use('/users', userRouter);
 
 // Handle unhandled routes
 app.use((req, res, next) => {
