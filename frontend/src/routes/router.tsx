@@ -3,7 +3,7 @@ import LoginPage from "../pages/LoginPage";
 import RegisterPage from "../pages/RegisterPage";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import Dashboard from "../pages/Dashboard";
-import TeamMembersPage from "../pages/TeamMembersPage";
+import UsersPage from "../pages/UsersPage";
 import ProtectedLayout from "./ProtectedLayout";
 import PublicRoute from "./PublicRoute";
 
@@ -41,7 +41,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "users",
-                element: <TeamMembersPage />,
+                element: <UsersPage />,
             },
             {
                 path: "projects",
