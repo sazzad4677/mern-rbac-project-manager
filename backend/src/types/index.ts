@@ -17,6 +17,18 @@ export enum ProjectStatus {
     DELETED = 'DELETED',
 }
 
+export enum AuditAction {
+    PROJECT_DELETED = 'PROJECT_DELETED',
+    ROLE_UPDATED = 'ROLE_UPDATED',
+    USER_STATUS_UPDATED = 'USER_STATUS_UPDATED',
+    PROJECT_CREATED = 'PROJECT_CREATED',
+}
+
+export enum AuditTargetType {
+    PROJECT = 'PROJECT',
+    USER = 'USER',
+}
+
 export interface IUser extends Document {
     name: string;
     email: string;
@@ -46,4 +58,14 @@ export interface IProject extends Document {
     createdBy: Types.ObjectId;
     createdAt: Date;
     updatedAt: Date;
+}
+
+export interface IAuditLog extends Document {
+    action: AuditAction;
+    performedBy: Types.ObjectId;
+    targetId: Types.ObjectId;
+    targetType: AuditTargetType;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    details?: any;
+    createdAt: Date;
 }

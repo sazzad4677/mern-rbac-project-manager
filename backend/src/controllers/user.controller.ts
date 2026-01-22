@@ -21,7 +21,7 @@ export const updateRole = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params as { id: string };
     const { role } = req.body;
 
-    const user = await userService.updateUserRole(id, role);
+    const user = await userService.updateUserRole(id, role, (req.user as any)._id.toString());
 
     sendResponse(res, {
         statusCode: 200,

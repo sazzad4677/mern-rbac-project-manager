@@ -39,7 +39,7 @@ export const update = catchAsync(async (req: Request, res: Response) => {
 
 export const deleteProject = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params as { id: string };
-    await projectService.deleteProject(id);
+    await projectService.deleteProject(id, (req.user as any)._id.toString());
 
     sendResponse(res, {
         statusCode: 200,

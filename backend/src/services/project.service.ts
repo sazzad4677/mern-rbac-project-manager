@@ -1,6 +1,8 @@
 import { Project } from '../models/project.model';
 import { IProject, ProjectStatus } from '../types';
 import { AppError } from '../utils/AppError';
+import * as auditService from './audit.service';
+import { AuditAction, AuditTargetType } from '../types';
 
 export const createProject = async (data: Partial<IProject>, userId: string) => {
     const project = await Project.create({
@@ -30,7 +32,7 @@ export const updateProject = async (id: string, data: Partial<IProject>) => {
     return project;
 };
 
-export const deleteProject = async (id: string) => {
+export const deleteProject = async (id: string, userId: string) => {
     // Soft delete: set isDeleted to true and status to DELETED
     const project = await Project.findByIdAndUpdate(
         id,
@@ -44,6 +46,9 @@ export const deleteProject = async (id: string) => {
     if (!project) {
         throw new AppError('Project not found', 404);
     }
+
+    // Capture Audit Log
+    await auditService.logAction(userId, AuditAction.PROJECT_DELETED, AuditTargetType.PROJECT, id);
 
     return project;
 };
