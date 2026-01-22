@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Folder, Users, Settings, FlaskConical, ChevronRight, BarChart3, Shield, LogOut } from 'lucide-react';
+import { LayoutDashboard, Folder, Users, Settings, FlaskConical, ChevronRight, LogOut } from 'lucide-react';
 import { useLogoutMutation } from "../../features/auth/useAuth";
 import { useAuth } from "../../context/AuthContext";
 
