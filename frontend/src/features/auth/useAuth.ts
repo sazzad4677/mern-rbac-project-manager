@@ -10,7 +10,7 @@ export const useLoginMutation = () => {
 
     return useMutation<AuthResponse, AxiosError<{ message: string }>, LoginCredentials>({
         mutationFn: loginUserAPI,
-        onSuccess: ({token, data}) => {
+        onSuccess: ({ token, data }) => {
             login(token, {
                 id: data.user._id,
                 email: data.user.email,
@@ -21,6 +21,34 @@ export const useLoginMutation = () => {
         },
         onError: (error) => {
             console.error("Login failed:", error.response?.data?.message || error.message)
+        }
+    })
+}
+
+export const useLogoutMutation = () => {
+    const navigate = useNavigate()
+    const { logout } = useAuth()
+
+    return useMutation<unknown, AxiosError<{ message: string }>, void>({
+        mutationFn: async () => {
+            // We'll try to call the API, but even if it fails, we should logout locally
+            try {
+                // If logoutUserAPI is not imported, we need to import it. 
+                // But for now, assuming standard flow.
+                const { logoutUserAPI } = await import("./authApi");
+                await logoutUserAPI();
+            } catch (error) {
+                console.warn("Logout API call failed, proceeding with local logout", error);
+            }
+        },
+        onSuccess: () => {
+            logout()
+            navigate("/login")
+        },
+        onError: () => {
+            // Fallback: force logout anyway
+            logout()
+            navigate("/login")
         }
     })
 }

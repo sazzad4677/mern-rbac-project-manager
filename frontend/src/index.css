@@ -1,3 +1,69 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:where(.dark, .dark *));
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@layer base {
+    :root {
+        --background: 0 0% 100%;
+        /* White */
+        --foreground: 240 10% 3.9%;
+        /* Zinc-950 */
+        --muted: 240 4.8% 95.9%;
+        /* Zinc-100 */
+        --muted-foreground: 240 3.8% 46.1%;
+        /* Zinc-500 */
+        --border: 240 5.9% 90%;
+        /* Zinc-200 */
+        --input: 240 5.9% 90%;
+        --ring: 240 10% 3.9%;
+    }
+
+    .dark {
+        --background: 240 10% 3.9%;
+        /* Zinc-950 */
+        --foreground: 0 0% 98%;
+        /* Zinc-50 */
+        --muted: 240 3.7% 15.9%;
+        /* Zinc-800 */
+        --muted-foreground: 240 5% 64.9%;
+        /* Zinc-400 */
+        --border: 240 3.7% 15.9%;
+        /* Zinc-800 */
+        --input: 240 3.7% 15.9%;
+        --ring: 240 4.9% 83.9%;
+    }
+
+    body {
+        @apply font-sans antialiased;
+        background-color: hsl(var(--background));
+        color: hsl(var(--foreground));
+    }
+
+    ::selection {
+        background-color: theme('colors.gray.200');
+        color: theme('colors.gray.900');
+    }
+
+    .dark ::selection {
+        background-color: theme('colors.gray.800');
+        color: theme('colors.gray.50');
+    }
+}
+
+@layer utilities {
+    .bg-grid-pattern {
+        background-image: radial-gradient(rgba(161, 161, 170, 0.3) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+
+    .dark .bg-grid-pattern {
+        background-image: radial-gradient(rgba(82, 82, 91, 0.3) 1px, transparent 1px);
+    }
+
+    .card {
+        background-color: hsl(var(--card));
+        color: hsl(var(--card-foreground));
+        border: 1px solid hsl(var(--border));
+        @apply shadow-sm rounded-lg;
+    }
+}

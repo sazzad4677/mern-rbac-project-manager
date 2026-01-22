@@ -12,11 +12,17 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex min-h-screen items-center justify-center p-4 bg-gray-50 dark:bg-gray-900">
-            <div className="w-full max-w-sm rounded-lg border bg-white p-8 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-                <h1 className="mb-6 text-center text-2xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
-                    Sign In
-                </h1>
+        <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 bg-grid-pattern relative">
+
+            <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-xl p-8">
+                <div className="mb-6 flex flex-col items-center gap-2 text-center">
+                    <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
+                        Sign In
+                    </h1>
+                    <p className="text-sm text-zinc-500">
+                        Enter your credentials to access your account
+                    </p>
+                </div>
 
                 {isError && (
                     <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-600 dark:bg-red-900/20 dark:text-red-400">

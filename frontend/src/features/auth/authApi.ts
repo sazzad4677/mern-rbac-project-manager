@@ -30,3 +30,8 @@ export const loginUserAPI = async (data: LoginCredentials): Promise<AuthResponse
     const response = await api.post<AuthResponse>("/auth/login", data)
     return response.data
 }
+
+export const logoutUserAPI = async (): Promise<{ message: string }> => {
+    const response = await api.post<{ message: string }>("/auth/logout")
+    return response.data
+}

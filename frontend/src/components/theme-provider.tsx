@@ -17,39 +17,20 @@ const ThemeProviderContext = createContext<ThemeProviderState | undefined>(undef
 
 export function ThemeProvider({
     children,
-    defaultTheme = "system",
-    storageKey = "vite-ui-theme",
 }: ThemeProviderProps) {
-    const [theme, setTheme] = useState<Theme>(
-        () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
-    )
+    // Force theme to be always dark, ignoring storage and defaults
+    const [theme] = useState<Theme>("dark")
 
     useEffect(() => {
         const root = document.documentElement
+        root.classList.remove("light")
+        root.classList.add("dark")
+    }, [])
 
-        root.classList.remove("light", "dark")
-
-        if (theme === "system") {
-            const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-                .matches
-                ? "dark"
-                : "light"
-
-            root.classList.add(systemTheme)
-            return
-        }
-
-        root.classList.add(theme)
-    }, [theme])
-
-    // Prevent unnecessary re-renders
     const value = useMemo(() => ({
         theme,
-        setTheme: (theme: Theme) => {
-            localStorage.setItem(storageKey, theme)
-            setTheme(theme)
-        },
-    }), [theme, storageKey])
+        setTheme: () => null, // Disable theme switching
+    }), [theme])
 
     return (
         <ThemeProviderContext.Provider value={value}>
