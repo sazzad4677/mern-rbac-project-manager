@@ -44,10 +44,34 @@ export const updateUserRole = async (
   return updatedUser;
 };
 
-export const updateUserStatus = async (userId: string, status: UserStatus) => {
-  const user = await User.findByIdAndUpdate(userId, { status }, { new: true });
+export const updateUserStatus = async (
+  userId: string,
+  status: UserStatus,
+  adminId: string,
+) => {
+  const user = await User.findById(userId);
   if (!user) {
     throw new AppError('User not found', 404);
   }
-  return user;
+  const oldStatus = user.status;
+
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    { status },
+    { new: true },
+  );
+
+  // Capture Audit Log
+  await auditService.logAction(
+    adminId,
+    AuditAction.USER_STATUS_UPDATED,
+    AuditTargetType.USER,
+    userId,
+    {
+      oldStatus,
+      newStatus: status,
+    },
+  );
+
+  return updatedUser;
 };

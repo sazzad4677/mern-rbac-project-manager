@@ -16,6 +16,16 @@ export const createProject = async (
     ...data,
     createdBy: userId,
   });
+
+  // Capture Audit Log
+  await auditService.logAction(
+    userId,
+    AuditAction.PROJECT_CREATED,
+    AuditTargetType.PROJECT,
+    project._id.toString(),
+    { name: project.name },
+  );
+
   return project;
 };
 

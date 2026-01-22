@@ -36,7 +36,7 @@ export const updateStatus = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params as { id: string };
     const { status } = req.body;
 
-    const user = await userService.updateUserStatus(id, status);
+    const user = await userService.updateUserStatus(id, status, req.user._id.toString());
 
     sendResponse(res, {
         statusCode: 200,
