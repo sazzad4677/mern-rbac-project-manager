@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import { User } from '../models/user.model';
 import { Invite } from '../models/invite.model';
 import { AppError } from '../utils/AppError';
-import { UserStatus } from '../types';
+import { UserStatus, UserRole } from '../types';
 import { signToken } from '../utils/signToken';
 
 
@@ -37,17 +37,35 @@ export const loginUser = async (email: string, password: string) => {
 };
 
 export const createInvite = async (email: string, role: string) => {
-    // Check if user already exists
+    // Check if an Active User already exists with this email
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-        throw new AppError('User already exists', 409);
+        throw new AppError('User is already registered', 409);
     }
+
+    // Check if an Invite already exists with this email
+    const existingInvite = await Invite.findOne({ email });
 
     // Generate token
     const token = crypto.randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-    // Create invite
+    if (existingInvite) {
+        // Case A: Existing Invite is Valid
+        if (existingInvite.expiresAt > new Date()) {
+            throw new AppError('A valid invite is already pending for this email', 409);
+        }
+
+        // Case B: Existing Invite is Expired -> Update it (Re-Invite)
+        existingInvite.token = token;
+        existingInvite.expiresAt = expiresAt;
+        existingInvite.role = role as UserRole; // Update role if changed
+        await existingInvite.save();
+
+        return existingInvite.token;
+    }
+
+    // Case C: No Invite -> Create new
     const invite = await Invite.create({
         email,
         role,
@@ -66,10 +84,12 @@ export const registerUserViaInvite = async (token: string, name: string, passwor
         throw new AppError('Invalid invite token', 400);
     }
 
+    // Strict Expiration Check
     if (invite.expiresAt < new Date()) {
-        throw new AppError('Invite token expired', 400);
+        throw new AppError('This invite link has expired. Please ask for a new one.', 400);
     }
 
+    // Check if already used
     if (invite.acceptedAt) {
         throw new AppError('Invite already used', 400);
     }
@@ -82,6 +102,7 @@ export const registerUserViaInvite = async (token: string, name: string, passwor
         password: hashedPassword,
         role: invite.role,
         status: UserStatus.ACTIVE,
+        invitedAt: invite.createdAt,
     });
 
     // Mark invite as accepted
