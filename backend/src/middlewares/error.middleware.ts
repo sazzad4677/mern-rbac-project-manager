@@ -59,7 +59,11 @@ const sendErrorProd = (err: any, res: Response) => {
 };
 
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 export const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
+    if (err.name === 'JsonWebTokenError') err = handleJWTError();
+    if (err.name === 'TokenExpiredError') err = handleJWTExpiredError();
+
     err.statusCode = err.statusCode || 500;
     err.status = err.status || 'error';
 
@@ -73,9 +77,6 @@ export const globalErrorHandler = (err: any, req: Request, res: Response, next: 
         if (error.code === 11000) error = handleDuplicateFieldsDB(error);
         if (error.name === 'ValidationError') error = handleValidationErrorDB(error);
         if (error.name === 'ZodError' || error instanceof ZodError) error = handleZodError(error);
-        if (error.name === 'JsonWebTokenError') error = handleJWTError();
-        if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
-
         sendErrorProd(error, res);
     }
 };

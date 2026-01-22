@@ -1,42 +1,5 @@
 import { api } from "../../lib/axios"
-
-export interface Project {
-    _id: string
-    name: string
-    description: string
-    status: "ACTIVE" | "ARCHIVED"
-    createdBy: string
-    createdAt: string
-    updatedAt: string
-}
-
-export interface CreateProjectPayload {
-    name: string
-    description: string
-}
-
-export interface UpdateProjectPayload {
-    name?: string
-    description?: string
-    status?: "ACTIVE" | "ARCHIVED"
-}
-
-interface FetchProjectsParams {
-    page?: number
-    limit?: number
-    search?: string
-    status?: string
-}
-
-interface PaginatedProjectsResponse {
-    success: boolean
-    data: {
-        projects: Project[]
-        total: number
-        page: number
-        limit: number
-    }
-}
+import { CreateProjectPayload, FetchProjectsParams, PaginatedProjectsResponse, Project, UpdateProjectPayload } from "./projectType"
 
 // Fetch all projects with pagination
 export const fetchProjectsAPI = async (params: FetchProjectsParams = {}): Promise<PaginatedProjectsResponse['data']> => {

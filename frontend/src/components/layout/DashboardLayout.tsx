@@ -40,7 +40,7 @@ export default function DashboardLayout() {
                     <div className="space-y-6">
                         <NavGroup title="Overview">
                             <NavItem to="/dashboard" icon={<LayoutDashboard className="h-4 w-4" />} label="Dashboard" />
-                            <NavItem to="/analytics" icon={<BarChart3 className="h-4 w-4" />} label="Analytics" />
+                            {/* <NavItem to="/analytics" icon={<BarChart3 className="h-4 w-4" />} label="Analytics" /> */}
                         </NavGroup>
 
                         <NavGroup title="Management">
@@ -48,9 +48,9 @@ export default function DashboardLayout() {
                             {user?.role === 'ADMIN' && (
                                 <NavItem to="/users" icon={<Users className="h-4 w-4" />} label="Users" />
                             )}
-                            {user?.role === 'ADMIN' && (
+                            {/* {user?.role === 'ADMIN' && (
                                 <NavItem to="/roles" icon={<Shield className="h-4 w-4" />} label="Roles & Permissions" />
-                            )}
+                            )} */}
                         </NavGroup>
 
                         <NavGroup title="Configuration">

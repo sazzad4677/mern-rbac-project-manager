@@ -3,12 +3,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Plus } from "lucide-react"
 import { Button } from "../components/ui/button"
 import Table from "../components/ui/table"
-import { fetchProjectsAPI, deleteProjectAPI, Project } from "@/features/projects/projectApi"
+import { fetchProjectsAPI, deleteProjectAPI } from "@/features/projects/projectApi"
 import ProjectModal from "@/features/projects/ProjectModal"
 import { getProjectTableColumns } from "@/features/projects/ProjectTableColumns"
 import ConfirmationModal from "@/components/ui/confirmation-modal"
 import { useAuth } from "@/context/AuthContext"
 import { useToast } from "@/context/ToastContext"
+import { Project } from "@/features/projects/projectType"
 
 export default function ProjectsPage() {
     const [isProjectModalOpen, setIsProjectModalOpen] = useState(false)

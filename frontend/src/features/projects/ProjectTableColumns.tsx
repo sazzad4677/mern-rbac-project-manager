@@ -1,6 +1,6 @@
 import { Pencil, Trash2 } from "lucide-react"
 import { Button } from "../../components/ui/button"
-import { Project } from "./projectApi"
+import { Project } from "./projectType"
 
 interface ProjectTableColumnsProps {
     onEdit: (project: Project) => void

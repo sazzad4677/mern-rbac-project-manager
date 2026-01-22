@@ -5,9 +5,10 @@ import GenericForm from "../../components/form/GenericForm"
 import TextField from "../../components/form/fields/TextField"
 import TextAreaField from "../../components/form/fields/TextAreaField"
 import SelectField from "../../components/form/fields/SelectField"
-import { createProjectAPI, updateProjectAPI, Project, CreateProjectPayload, UpdateProjectPayload } from "./projectApi"
+import { createProjectAPI, updateProjectAPI } from "./projectApi"
 import { createProjectSchema, updateProjectSchema } from "./projectSchemas"
 import { useToast } from "../../context/ToastContext"
+import { Project, CreateProjectPayload, UpdateProjectPayload } from "./projectType"
 
 interface ProjectModalProps {
     isOpen: boolean

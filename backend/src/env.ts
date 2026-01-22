@@ -6,20 +6,21 @@ import path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 const envSchema = z.object({
-    PORT: z.string().default('3000'),
-    MONGO_URI: z.url(),
-    JWT_SECRET: z.string().min(10),
-    REFRESH_TOKEN_SECRET: z.string().min(10),
-    REFRESH_TOKEN_EXPIRES_IN: z.string().default('7d'),
-    NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  PORT: z.string().default('3000'),
+  MONGO_URI: z.url(),
+  JWT_SECRET: z.string().min(10),
+  REFRESH_TOKEN_SECRET: z.string().min(10),
+  REFRESH_TOKEN_EXPIRES_IN: z.string().default('7d'),
+  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  FRONTEND_URL: z.url().default('http://localhost:5173'),
 });
 
 const envParse = envSchema.safeParse(process.env);
 
 if (!envParse.success) {
   // eslint-disable-next-line no-console
-    console.error('❌ Invalid environment variables:', z.formatError(envParse.error));
-    process.exit(1);
+  console.error('❌ Invalid environment variables:', z.formatError(envParse.error));
+  process.exit(1);
 }
 
 export const env = envParse.data;
