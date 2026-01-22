@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import { env } from './env';
 import { connectDB } from './config/db';
 import { AppError } from './utils/AppError';
@@ -14,6 +15,7 @@ const app = express();
 
 app.use(helmet());
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json());
 
 app.get('/', (req, res) => {

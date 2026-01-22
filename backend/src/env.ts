@@ -9,6 +9,8 @@ const envSchema = z.object({
     PORT: z.string().default('3000'),
     MONGO_URI: z.url(),
     JWT_SECRET: z.string().min(10),
+    REFRESH_TOKEN_SECRET: z.string().min(10),
+    REFRESH_TOKEN_EXPIRES_IN: z.string().default('7d'),
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
 

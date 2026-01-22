@@ -1,10 +1,12 @@
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import { User } from '../models/user.model';
 import { Invite } from '../models/invite.model';
 import { AppError } from '../utils/AppError';
 import { UserStatus, UserRole } from '../types';
-import { signToken } from '../utils/signToken';
+import { signAccessToken, signRefreshToken } from '../utils/signToken';
+import { env } from '../env';
 
 
 export const loginUser = async (email: string, password: string) => {
@@ -26,14 +28,14 @@ export const loginUser = async (email: string, password: string) => {
         throw new AppError('Your account has been deactivated.', 403);
     }
 
-    // Generate token and send response
-    // eslint-disable-next-line no-underscore-dangle
-    const token = signToken(user._id.toString());
+    // Generate tokens
+    const accessToken = signAccessToken(user._id.toString());
+    const refreshToken = signRefreshToken(user._id.toString());
 
     // Remove password from output
     user.password = undefined;
 
-    return { user, token };
+    return { user, accessToken, refreshToken };
 };
 
 export const createInvite = async (email: string, role: string) => {
@@ -109,5 +111,30 @@ export const registerUserViaInvite = async (token: string, name: string, passwor
     invite.acceptedAt = new Date();
     await invite.save();
 
-    return { user };
+    // Generate tokens
+    const accessToken = signAccessToken(user._id.toString());
+    const refreshToken = signRefreshToken(user._id.toString());
+
+    return { user, accessToken, refreshToken };
+};
+
+export const refreshAccessToken = async (incomingRefreshToken: string) => {
+    try {
+        const decoded = jwt.verify(incomingRefreshToken, env.REFRESH_TOKEN_SECRET) as JwtPayload;
+
+        const currentUser = await User.findById(decoded.id);
+        if (!currentUser) {
+            throw new AppError('The user belonging to this token no longer does exist.', 401);
+        }
+
+        if (currentUser.status === UserStatus.INACTIVE) {
+            throw new AppError('Your account has been deactivated.', 403);
+        }
+
+        const accessToken = signAccessToken(currentUser._id.toString());
+
+        return { accessToken };
+    } catch (error) {
+        throw new AppError('Invalid refresh token or session expired', 401);
+    }
 };

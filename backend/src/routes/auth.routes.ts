@@ -16,5 +16,7 @@ router.post(
     authController.invite,
 );
 router.post('/register-via-invite', validateRequest(registerSchema), authController.registerViaInvite);
+router.post('/refresh-token', authController.refreshToken);
+router.post('/logout', authController.logout);
 
 export const authRouter = router;
