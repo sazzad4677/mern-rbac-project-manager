@@ -1,6 +1,7 @@
 import { Shield, Pencil, RefreshCw } from "lucide-react"
 import { Button } from "../ui/button"
 import { User } from "../../features/users/userTypes"
+import { STATUS_CONFIG } from "../../config/statuses"
 
 interface UserTableColumnsProps {
     onEdit: (user: User) => void
@@ -35,16 +36,15 @@ export const getUserTableColumns = ({ onEdit, onResend }: UserTableColumnsProps)
     },
     {
         header: "Status",
-        render: (user: User) => (
-            <span
-                className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset ${user.status === "ACTIVE"
-                        ? "bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-500/10 dark:text-green-400"
-                        : "bg-yellow-50 text-yellow-800 ring-yellow-600/20 dark:bg-yellow-500/10 dark:text-yellow-400"
-                    }`}
-            >
-                {user.status === "ACTIVE" ? "Active" : "Pending"}
-            </span>
-        ),
+        render: (user: User) => {
+            const config = STATUS_CONFIG[user.status] || STATUS_CONFIG.INACTIVE
+
+            return (
+                <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ring-1 ring-inset ${config.className}`}>
+                    {config.label}
+                </span>
+            )
+        },
     },
     {
         header: "Actions",

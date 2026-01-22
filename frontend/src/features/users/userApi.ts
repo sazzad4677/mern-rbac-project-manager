@@ -1,10 +1,22 @@
 import { api } from "../../lib/axios"
-import { User, PaginatedUsersResponse, UserRole, UserStatus } from "./userTypes"
+import { User, UserRole, UserStatus, PaginatedUsersResponse } from "./userTypes"
 
-// Fetch all users
-export const fetchUsersAPI = async (): Promise<User[]> => {
-    const response = await api.get<PaginatedUsersResponse>("/users")
-    return response.data.data.users
+interface FetchUsersParams {
+    page?: number
+    limit?: number
+}
+
+// Fetch all users with pagination only
+export const fetchUsersAPI = async (params: FetchUsersParams = {}): Promise<PaginatedUsersResponse['data']> => {
+    const { page = 1, limit = 10 } = params
+
+    const queryParams = new URLSearchParams({
+        page: page.toString(),
+        limit: limit.toString(),
+    })
+
+    const response = await api.get<PaginatedUsersResponse>(`/users?${queryParams.toString()}`)
+    return response.data.data
 }
 
 // Update user role

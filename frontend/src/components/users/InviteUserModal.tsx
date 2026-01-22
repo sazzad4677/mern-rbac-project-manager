@@ -37,7 +37,7 @@ export default function InviteUserModal({ isOpen, onClose, onSuccess }: InviteUs
         <Modal
             isOpen={isOpen}
             onClose={onClose}
-            title="Invite Team Member"
+            title="Invite User"
         >
             <div className="space-y-4">
                 <p className="text-sm text-zinc-500">

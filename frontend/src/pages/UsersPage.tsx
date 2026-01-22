@@ -9,16 +9,26 @@ import EditUserModal from "@/components/users/EditUserModal"
 import InviteUserModal from "@/components/users/InviteUserModal"
 import CopyLinkModal from "@/components/users/CopyLinkModal"
 import { getUserTableColumns } from "@/components/users/UserTableColumns"
+import { USER_STATUSES, STATUS_CONFIG } from "@/config/statuses"
 
 export default function UsersPage() {
     const [isInviteModalOpen, setIsInviteModalOpen] = useState(false)
     const [generatedLink, setGeneratedLink] = useState<string | null>(null)
     const [editingUser, setEditingUser] = useState<User | null>(null)
 
-    const { data: users, isLoading } = useQuery({
-        queryKey: ["users"],
-        queryFn: fetchUsersAPI,
+    // Pagination only (search/filter are client-side in Table component)
+    const [page, setPage] = useState(1)
+    const limit = 10
+
+    const { data, isLoading, isPlaceholderData } = useQuery({
+        queryKey: ["users", page],
+        queryFn: () => fetchUsersAPI({ page, limit }),
+        placeholderData: (previousData) => previousData,
     })
+
+    const users = data?.users || []
+    const totalPages = data ? Math.ceil(data.total / limit) : 0
+    const totalItems = data?.total || 0
 
     const handleInviteSuccess = (token: string) => {
         const fullUrl = `${window.location.origin}/register?token=${token}`
@@ -28,6 +38,10 @@ export default function UsersPage() {
     const handleResend = (user: User) => {
         // TODO: Implement resend invitation logic
         console.log("Resend invitation to:", user.email)
+    }
+
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage)
     }
 
     const columns = getUserTableColumns({
@@ -40,10 +54,10 @@ export default function UsersPage() {
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-                        Team Members
+                        Users
                     </h1>
                     <p className="text-sm text-zinc-500">
-                        Manage your team members and their account permissions here.
+                        Manage your users and their account permissions here.
                     </p>
                 </div>
                 <Button onClick={() => setIsInviteModalOpen(true)}>
@@ -54,10 +68,27 @@ export default function UsersPage() {
 
             <Table
                 columns={columns}
-                data={users || []}
-                isLoading={isLoading}
+                data={users}
+                isLoading={isLoading && !isPlaceholderData}
                 emptyMessage="No members found."
                 loadingMessage="Loading..."
+                searchable
+                searchPlaceholder="Search by name or email..."
+                filterable={{
+                    placeholder: "All Status",
+                    options: USER_STATUSES.map((status) => ({
+                        label: STATUS_CONFIG[status].label,
+                        value: status,
+                    })),
+                }}
+                pagination={{
+                    currentPage: page,
+                    totalPages,
+                    totalItems,
+                    onPageChange: handlePageChange,
+                    hasNextPage: page < totalPages,
+                    hasPrevPage: page > 1,
+                }}
             />
 
             {/* Modals */}

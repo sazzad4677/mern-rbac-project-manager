@@ -43,7 +43,7 @@ export default function DashboardLayout() {
 
                         <NavGroup title="Management">
                             <NavItem to="/projects" icon={<Folder className="h-4 w-4" />} label="Projects" />
-                            <NavItem to="/users" icon={<Users className="h-4 w-4" />} label="Team Members" />
+                            <NavItem to="/users" icon={<Users className="h-4 w-4" />} label="Users" />
                             <NavItem to="/roles" icon={<Shield className="h-4 w-4" />} label="Roles & Permissions" />
                         </NavGroup>
 
