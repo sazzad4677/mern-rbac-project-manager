@@ -1,37 +1,26 @@
 import { api } from "../../lib/axios"
-import { z } from "zod"
+import { LoginCredentials, AuthResponse, InviteUserPayload, RegisterInput } from "./authTypes"
 
-// Types used in API
-export const loginSchema = z.object({
-    email: z.email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-})
-
-export type LoginCredentials = z.infer<typeof loginSchema>
-
-export interface UserResponse {
-    _id: string
-    name: string
-    email: string
-    role: string
-}
-
-export interface AuthResponse {
-    success: boolean
-    message: string
-    token: string
-    data: {
-        user: UserResponse
-    }
-}
-
-// API Functions
+// Login
 export const loginUserAPI = async (data: LoginCredentials): Promise<AuthResponse> => {
     const response = await api.post<AuthResponse>("/auth/login", data)
     return response.data
 }
 
+// Logout
 export const logoutUserAPI = async (): Promise<{ message: string }> => {
     const response = await api.post<{ message: string }>("/auth/logout")
+    return response.data
+}
+
+// Invite
+export const inviteUserAPI = async (data: InviteUserPayload): Promise<{ message: string; data: { token: string } }> => {
+    const response = await api.post<{ message: string; data: { token: string } }>("/users/invite", data)
+    return response.data
+}
+
+// Register
+export const registerUserAPI = async (data: Omit<RegisterInput, "confirmPassword">): Promise<AuthResponse> => {
+    const response = await api.post<AuthResponse>("/auth/register", data)
     return response.data
 }

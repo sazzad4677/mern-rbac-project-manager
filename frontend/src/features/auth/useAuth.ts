@@ -1,8 +1,9 @@
 import { useMutation } from "@tanstack/react-query"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext" // Import from your global context
-import { loginUserAPI, LoginCredentials, AuthResponse } from "./authApi"
+import { loginUserAPI } from "./authApi"
 import { AxiosError } from "axios"
+import { LoginCredentials, AuthResponse } from "./authTypes"
 
 export const useLoginMutation = () => {
     const navigate = useNavigate()
@@ -10,12 +11,12 @@ export const useLoginMutation = () => {
 
     return useMutation<AuthResponse, AxiosError<{ message: string }>, LoginCredentials>({
         mutationFn: loginUserAPI,
-        onSuccess: ({ token, data }) => {
-            login(token, {
-                id: data.user._id,
-                email: data.user.email,
-                name: data.user.name,
-                role: data.user.role
+        onSuccess: (response) => {
+            login(response.data.token, {
+                id: response.data.user._id,
+                email: response.data.user.email,
+                name: response.data.user.name,
+                role: response.data.user.role
             })
             navigate("/dashboard")
         },
@@ -31,10 +32,7 @@ export const useLogoutMutation = () => {
 
     return useMutation<unknown, AxiosError<{ message: string }>, void>({
         mutationFn: async () => {
-            // We'll try to call the API, but even if it fails, we should logout locally
             try {
-                // If logoutUserAPI is not imported, we need to import it. 
-                // But for now, assuming standard flow.
                 const { logoutUserAPI } = await import("./authApi");
                 await logoutUserAPI();
             } catch (error) {

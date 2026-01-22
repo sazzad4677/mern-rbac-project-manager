@@ -1,7 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import LoginPage from "../pages/LoginPage";
+import RegisterPage from "../pages/RegisterPage";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import Dashboard from "../pages/Dashboard";
+import TeamMembersPage from "../pages/TeamMembersPage";
 import ProtectedLayout from "./ProtectedLayout";
 import PublicRoute from "./PublicRoute";
 
@@ -12,6 +14,14 @@ export const router = createBrowserRouter([
         element: (
             <PublicRoute>
                 <LoginPage />
+            </PublicRoute>
+        ),
+    },
+    {
+        path: "/register",
+        element: (
+            <PublicRoute>
+                <RegisterPage />
             </PublicRoute>
         ),
     },
@@ -30,10 +40,13 @@ export const router = createBrowserRouter([
                 element: <Dashboard />,
             },
             {
+                path: "users",
+                element: <TeamMembersPage />,
+            },
+            {
                 path: "projects",
                 element: <div>Projects Page</div>,
             },
-            // Redirect root "/" to dashboard
             {
                 index: true,
                 element: <Dashboard />,

@@ -1,7 +1,8 @@
 import { Button } from "../components/ui/button"
 import GenericForm from "../components/form/GenericForm"
 import TextField from "../components/form/fields/TextField"
-import { loginSchema, LoginCredentials } from "../features/auth/authApi"
+import { LoginCredentials } from "@/features/auth/authTypes"
+import { loginSchema } from "@/features/auth/authSchemas"
 import { useLoginMutation } from "../features/auth/useAuth"
 
 export default function LoginPage() {
