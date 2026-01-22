@@ -2,11 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Folder, Users, Settings, FlaskConical, ChevronRight, BarChart3, Shield, LogOut } from 'lucide-react';
 import { useLogoutMutation } from "../../features/auth/useAuth";
+import { useAuth } from "../../context/AuthContext";
 
 export default function DashboardLayout() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const { mutate: logout } = useLogoutMutation();
+    const { user } = useAuth();
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -43,8 +45,12 @@ export default function DashboardLayout() {
 
                         <NavGroup title="Management">
                             <NavItem to="/projects" icon={<Folder className="h-4 w-4" />} label="Projects" />
-                            <NavItem to="/users" icon={<Users className="h-4 w-4" />} label="Users" />
-                            <NavItem to="/roles" icon={<Shield className="h-4 w-4" />} label="Roles & Permissions" />
+                            {user?.role === 'ADMIN' && (
+                                <NavItem to="/users" icon={<Users className="h-4 w-4" />} label="Users" />
+                            )}
+                            {user?.role === 'ADMIN' && (
+                                <NavItem to="/roles" icon={<Shield className="h-4 w-4" />} label="Roles & Permissions" />
+                            )}
                         </NavGroup>
 
                         <NavGroup title="Configuration">

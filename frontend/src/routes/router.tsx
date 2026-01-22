@@ -7,6 +7,7 @@ import UsersPage from "../pages/UsersPage";
 import ProjectsPage from "../pages/ProjectsPage";
 import ProtectedLayout from "./ProtectedLayout";
 import PublicRoute from "./PublicRoute";
+import RoleGuard from "./RoleGuard";
 
 export const router = createBrowserRouter([
     // PUBLIC ROUTES (No Sidebar, No Header)
@@ -42,7 +43,11 @@ export const router = createBrowserRouter([
             },
             {
                 path: "users",
-                element: <UsersPage />,
+                element: (
+                    <RoleGuard allowedRoles={['ADMIN']}>
+                        <UsersPage />
+                    </RoleGuard>
+                ),
             },
             {
                 path: "projects",
