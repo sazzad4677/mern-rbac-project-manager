@@ -8,6 +8,7 @@ import { globalErrorHandler } from './middlewares/error.middleware';
 
 import { authRouter } from './routes/auth.routes';
 import { userRouter } from './routes/user.routes';
+import { projectRouter } from './routes/project.routes';
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/auth', authRouter);
 app.use('/users', userRouter);
+app.use('/projects', projectRouter);
 
 // Handle unhandled routes
 app.use((req, res, next) => {
