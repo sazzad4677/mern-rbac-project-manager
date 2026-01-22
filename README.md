@@ -33,7 +33,7 @@ A full-stack Project Management Dashboard with strict Role-Based Access Control 
 
 ### 1. Clone the Repository
 ```bash
-git clone <repo-url>
+git clone https://github.com/sazzad4677/mern-rbac-project-manager.git
 cd mern-rbac-project-manager
 ```
 
