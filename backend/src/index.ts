@@ -34,11 +34,13 @@ const startServer = async () => {
   try {
     await connectDB();
     app.listen(env.PORT, () => {
+      // eslint-disable-next-line no-console
       console.log(
         `Server is running on port ${env.PORT} in ${env.NODE_ENV} mode`,
       );
     });
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Failed to start server:', error);
     process.exit(1);
   }

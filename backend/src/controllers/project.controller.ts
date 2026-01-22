@@ -1,10 +1,11 @@
+/* eslint-disable no-underscore-dangle */
 import { Request, Response } from 'express';
 import { catchAsync } from '../utils/catchAsync';
 import { sendResponse } from '../utils/sendResponse';
 import * as projectService from '../services/project.service';
 
 export const create = catchAsync(async (req: Request, res: Response) => {
-    const project = await projectService.createProject(req.body, (req.user as any)._id.toString());
+    const project = await projectService.createProject(req.body, req.user._id.toString());
 
     sendResponse(res, {
         statusCode: 201,
@@ -39,7 +40,7 @@ export const update = catchAsync(async (req: Request, res: Response) => {
 
 export const deleteProject = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params as { id: string };
-    await projectService.deleteProject(id, (req.user as any)._id.toString());
+    await projectService.deleteProject(id, req.user._id.toString());
 
     sendResponse(res, {
         statusCode: 200,

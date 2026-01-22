@@ -1,4 +1,4 @@
-import { Schema, model, Document, Types } from 'mongoose';
+import { Schema, model } from 'mongoose';
 import { IAuditLog, AuditAction, AuditTargetType } from '../types';
 
 const auditLogSchema = new Schema<IAuditLog>(

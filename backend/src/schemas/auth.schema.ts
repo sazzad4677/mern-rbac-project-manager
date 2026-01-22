@@ -21,6 +21,3 @@ export const inviteSchema = z.object({
         role: z.string().min(1, 'Role is required'),
     }),
 });
-
-export type LoginInput = z.infer<typeof loginSchema>;
-export type RegisterInput = z.infer<typeof registerSchema>;

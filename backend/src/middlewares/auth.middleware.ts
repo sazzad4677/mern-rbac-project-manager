@@ -6,15 +6,20 @@ import { User } from '../models/user.model';
 import { env } from '../env';
 import { UserRole } from '../types';
 
-export const protect = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    // Getting token and check of it's there
+export const protect = catchAsync(
+  async (req: Request, _res: Response, next: NextFunction) => {
+    // Getting token and check if it's there
     let token;
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-        token = req.headers.authorization.split(' ')[1];
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer')
+    ) {
+      [, token] = req.headers.authorization.split(' ');
     }
 
     if (!token) {
-        return next(new AppError('Please log in to get access', 401));
+      next(new AppError('Please log in to get access', 401));
+      return;
     }
 
     // Verification token
@@ -23,26 +28,36 @@ export const protect = catchAsync(async (req: Request, res: Response, next: Next
     // Check if user still exists
     const currentUser = await User.findById(decoded.id);
     if (!currentUser) {
-        return next(new AppError('The user belonging to this token no longer does exist.', 401));
+      next(
+        new AppError(
+          'The user belonging to this token no longer does exist.',
+          401,
+        ),
+      );
+      return;
     }
 
-    // Check if user is INACTIVE
+    //  Check if user is INACTIVE
     if (currentUser.status === 'INACTIVE') {
-        return next(new AppError('Your account is inactive. Please contact support.', 401));
+      next(
+        new AppError('Your account is inactive. Please contact support.', 401),
+      );
+      return;
     }
 
     // GRANT ACCESS TO PROTECTED ROUTE
     req.user = currentUser;
     next();
-});
+  },
+);
 
-export const restrictTo = (...roles: UserRole[]) => {
-    return (req: Request, res: Response, next: NextFunction) => {
-        // roles ['admin', 'manager']. role='user'
-        if (!roles.includes(req.user.role)) {
-            return next(new AppError('You do not have permission to perform this action', 403));
-        }
+// Removed the { return ... } wrapper around the outer function
+export const restrictTo = (...roles: UserRole[]) =>
+  (req: Request, _res: Response, next: NextFunction) => {
+    if (!roles.includes(req.user.role)) {
+      next(new AppError('You do not have permission to perform this action', 403));
+      return;
+    }
 
-        next();
-    };
-};
+    next();
+  };

@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import jwt, { JwtPayload } from 'jsonwebtoken';
@@ -134,6 +135,7 @@ export const refreshAccessToken = async (incomingRefreshToken: string) => {
         const accessToken = signAccessToken(currentUser._id.toString());
 
         return { accessToken };
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
         throw new AppError('Invalid refresh token or session expired', 401);
     }
