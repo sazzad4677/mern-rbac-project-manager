@@ -4,6 +4,7 @@ import RegisterPage from "../pages/RegisterPage";
 import DashboardLayout from "../components/layout/DashboardLayout";
 import Dashboard from "../pages/Dashboard";
 import UsersPage from "../pages/UsersPage";
+import ProjectsPage from "../pages/ProjectsPage";
 import ProtectedLayout from "./ProtectedLayout";
 import PublicRoute from "./PublicRoute";
 
@@ -45,7 +46,7 @@ export const router = createBrowserRouter([
             },
             {
                 path: "projects",
-                element: <div>Projects Page</div>,
+                element: <ProjectsPage />,
             },
             {
                 index: true,

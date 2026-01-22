@@ -34,9 +34,8 @@ const projectSchema = new Schema<IProject>(
 );
 
 // Soft Delete Middleware
-projectSchema.pre(/^find/, function (this: object, next: (err?: CallbackError) => void) {
-    (this as Query<IProject[], IProject>).find({ isDeleted: { $ne: true } });
-    next();
+projectSchema.pre(/^find/, function () {
+    (this as any).find({ isDeleted: { $ne: true } });
 });
 
 export const Project = model<IProject>('Project', projectSchema);

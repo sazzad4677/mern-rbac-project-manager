@@ -30,13 +30,24 @@ export const createProject = async (
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getAllProjects = async (query: any) => {
-  // Model middleware automatically handles isDeleted: { $ne: true }
-  const projects = await Project.find(query).populate(
-    'createdBy',
-    'name email',
-  );
-  return projects;
+export const getAllProjects = async (
+  page: number,
+  limit: number,
+) => {
+  const skip = (page - 1) * limit;
+  const projects = await Project.find()
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit)
+    .populate('createdBy', 'name email');
+  const total = await Project.countDocuments();
+
+  return {
+    projects,
+    total,
+    page,
+    limit,
+  };
 };
 
 export const updateProject = async (id: string, data: Partial<IProject>) => {

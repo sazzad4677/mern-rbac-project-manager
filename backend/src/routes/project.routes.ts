@@ -13,16 +13,16 @@ router.use(protect);
 router.post(
     '/',
     validateRequest(createProjectSchema),
-    projectController.create
+    projectController.createProject
 );
 
-router.get('/', projectController.getAll);
+router.get('/', projectController.getAllProjects);
 
 router.patch(
     '/:id',
     restrictTo(UserRole.ADMIN),
     validateRequest(updateProjectSchema),
-    projectController.update
+    projectController.updateProject
 );
 
 router.delete(
