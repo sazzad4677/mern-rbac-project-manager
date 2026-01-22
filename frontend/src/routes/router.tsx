@@ -8,6 +8,7 @@ import ProjectsPage from "../pages/ProjectsPage";
 import ProtectedLayout from "./ProtectedLayout";
 import PublicRoute from "./PublicRoute";
 import RoleGuard from "./RoleGuard";
+import ErrorPage from "../pages/ErrorPage";
 
 export const router = createBrowserRouter([
     // PUBLIC ROUTES (No Sidebar, No Header)
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
                 <DashboardLayout />
             </ProtectedLayout>
         ),
+        errorElement: <ErrorPage />,
         children: [
             {
                 path: "dashboard",
