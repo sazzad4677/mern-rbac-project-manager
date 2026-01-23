@@ -1,14 +1,22 @@
 import { useState, useRef, useEffect } from "react";
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Folder, Users, Settings, FlaskConical, ChevronRight, LogOut } from 'lucide-react';
+import { LayoutDashboard, Folder, Users, Settings, FlaskConical, ChevronRight, LogOut, Menu, X } from 'lucide-react';
 import { useLogoutMutation } from "../../features/auth/useAuth";
 import { useAuth } from "../../context/AuthContext";
+import { Button } from "../ui/button";
 
 export default function DashboardLayout() {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const { mutate: logout } = useLogoutMutation();
     const { user } = useAuth();
+    const location = useLocation();
+
+    // Close mobile menu when route changes
+    useEffect(() => {
+        setIsMobileMenuOpen(false);
+    }, [location.pathname]);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -25,15 +33,33 @@ export default function DashboardLayout() {
 
     return (
         <div className="min-h-screen bg-background text-foreground bg-grid-pattern font-sans relative transition-colors duration-300">
+            {/* Mobile Menu Overlay */}
+            {isMobileMenuOpen && (
+                <div
+                    className="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
-            <aside className="fixed inset-y-0 left-0 z-50 w-64 border-r border-border bg-sidebar text-sidebar-foreground transition-all duration-300">
-                <div className="flex h-16 items-center border-b border-border px-6">
+            <aside className={`fixed inset-y-0 left-0 z-50 w-64 border-r border-border bg-white dark:bg-zinc-900 text-sidebar-foreground transition-transform duration-300 md:translate-x-0 ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
+                }`}>
+                <div className="flex h-16 items-center justify-between border-b border-border px-6">
                     <NavLink to="/" className="flex items-center gap-2 font-bold text-lg tracking-tight text-sidebar-foreground">
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900">
                             <FlaskConical className="h-5 w-5" />
                         </div>
                         <span>SaaS Admin</span>
                     </NavLink>
+                    {/* Close button for mobile */}
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="md:hidden text-muted-foreground hover:text-foreground"
+                    >
+                        <X className="h-5 w-5" />
+                    </Button>
                 </div>
 
                 <div className="h-[calc(100vh-4rem)] overflow-y-auto p-4">
@@ -61,11 +87,23 @@ export default function DashboardLayout() {
             </aside>
 
             {/* Main Layout Content */}
-            <div className="ml-64 min-h-screen flex flex-col">
+            <div className={`min-h-screen flex flex-col transition-all duration-300 ${isMobileMenuOpen ? 'overflow-hidden' : ''} md:ml-64`}>
                 {/* Header */}
-                <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b border-border bg-sidebar/80 px-8 backdrop-blur-md transition-all duration-300">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Breadcrumbs />
+                <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b border-border bg-white/80 dark:bg-zinc-900/80 px-4 md:px-8 backdrop-blur-md transition-all duration-300">
+                    <div className="flex items-center gap-4">
+                        {/* Hamburger Trigger */}
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={() => setIsMobileMenuOpen(true)}
+                            className="mr-2 md:hidden text-muted-foreground hover:text-foreground"
+                        >
+                            <Menu className="h-5 w-5" />
+                        </Button>
+
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <Breadcrumbs />
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-4 relative" ref={dropdownRef}>
@@ -73,26 +111,27 @@ export default function DashboardLayout() {
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                             className="h-8 w-8 rounded-full bg-sidebar border border-zinc-700 flex items-center justify-center text-xs font-bold text-sidebar-foreground cursor-pointer hover:bg-zinc-800 transition-colors"
                         >
-                            US
+                            {user?.name?.substring(0, 2).toUpperCase() || "US"}
                         </button>
 
                         {isDropdownOpen && (
                             <div className="absolute top-10 right-0 w-48 rounded-md border border-zinc-800 bg-zinc-900 shadow-lg z-50 py-1">
-                                <button
+                                <Button
+                                    variant="ghost"
                                     onClick={() => logout()}
-                                    className="cursor-pointer flex w-full items-center gap-2 px-4 py-2 text-sm text-red-400 hover:bg-zinc-800 transition-colors"
+                                    className="w-full justify-start gap-2 px-4 text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                                 >
                                     <LogOut className="h-4 w-4" />
                                     <span>Sign out</span>
-                                </button>
+                                </Button>
                             </div>
                         )}
                     </div>
                 </header>
 
                 {/* Main Content Area */}
-                <main className="flex-1 p-8 animate-fade-in">
-                    <div className="mx-auto max-w-8xl">
+                <main className="flex-1 p-4 md:p-8 animate-fade-in w-full overflow-x-hidden">
+                    <div className="mx-auto max-w-6xl">
                         <Outlet />
                     </div>
                 </main>
