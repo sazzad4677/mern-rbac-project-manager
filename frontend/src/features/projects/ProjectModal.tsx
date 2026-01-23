@@ -104,11 +104,11 @@ export default function ProjectModal({ isOpen, onClose, project }: ProjectModalP
                         />
                     )}
 
-                    <div className="flex justify-end gap-3 pt-4">
-                        <Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
+                    <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4">
+                        <Button type="button" variant="secondary" onClick={onClose} disabled={isPending} className="w-full sm:w-auto">
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isPending}>
+                        <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
                             {isPending ? (isEditMode ? "Updating..." : "Creating...") : (isEditMode ? "Update Project" : "Create Project")}
                         </Button>
                     </div>

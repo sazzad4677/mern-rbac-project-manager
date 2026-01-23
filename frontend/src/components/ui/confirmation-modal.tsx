@@ -30,11 +30,12 @@ export default function ConfirmationModal({
                     </div>
                 </div>
 
-                <div className="flex justify-end gap-3 pt-2">
+                <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-2">
                     <Button
                         variant="secondary"
                         onClick={onClose}
                         disabled={isDeleting}
+                        className="w-full sm:w-auto"
                     >
                         Cancel
                     </Button>
@@ -42,6 +43,7 @@ export default function ConfirmationModal({
                         variant="destructive"
                         onClick={onConfirm}
                         disabled={isDeleting}
+                        className="w-full sm:w-auto"
                     >
                         {isDeleting ? "Deleting..." : "Delete"}
                     </Button>

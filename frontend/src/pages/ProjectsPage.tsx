@@ -85,7 +85,7 @@ export default function ProjectsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
                         Projects
@@ -94,7 +94,7 @@ export default function ProjectsPage() {
                         Manage your projects and track their progress.
                     </p>
                 </div>
-                <Button onClick={handleCreateNew}>
+                <Button onClick={handleCreateNew} className="w-full md:w-auto">
                     <Plus className="mr-2 h-4 w-4" />
                     New Project
                 </Button>
