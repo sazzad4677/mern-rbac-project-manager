@@ -13,9 +13,9 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 bg-grid-pattern relative">
+        <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-950 bg-grid-pattern relative px-4">
 
-            <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-xl p-8">
+            <div className="w-full max-w-md bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-xl rounded-xl p-6 md:p-8">
                 <div className="mb-6 flex flex-col items-center gap-2 text-center">
                     <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
                         Sign In

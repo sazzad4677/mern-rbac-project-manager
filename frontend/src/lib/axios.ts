@@ -28,10 +28,12 @@ api.interceptors.response.use(
 
         // Check for 401 Unauthorized
         if (error.response?.status === 401 && !originalRequest._retry) {
-            // Prevent infinite loops
-            if (originalRequest.url?.includes("/auth/refresh-token")) {
+            // Prevent infinite loops and don't retry login
+            if (originalRequest.url?.includes("/auth/refresh-token") || originalRequest.url?.includes("/auth/login")) {
                 localStorage.removeItem("token")
-                window.location.href = "/login"
+                if (!originalRequest.url?.includes("/auth/login")) {
+                    window.location.href = "/login"
+                }
                 return Promise.reject(error)
             }
 
