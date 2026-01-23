@@ -1,6 +1,7 @@
 import { ReactNode, useState, useMemo } from "react"
 import { Button } from "./button"
 import { ChevronLeft, ChevronRight, Search } from "lucide-react"
+import { Select } from "./select"
 
 interface Column {
     header: string
@@ -79,9 +80,9 @@ export default function Table({
         <div className="space-y-4">
             {/* Search & Filter Bar */}
             {(searchable || filterable) && (
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                     {searchable && (
-                        <div className="relative flex-1 max-w-sm">
+                        <div className="relative flex-1">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500" />
                             <input
                                 type="text"
@@ -93,86 +94,87 @@ export default function Table({
                         </div>
                     )}
                     {filterable && (
-                        <select
-                            value={filterValue}
-                            onChange={(e) => setFilterValue(e.target.value)}
-                            className="px-4 py-2 rounded-md border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 text-sm text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                        >
-                            <option value="">{filterable.placeholder || "All"}</option>
-                            {filterable.options?.map((option) => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
+                        <div className="w-full sm:w-48">
+                            <Select
+                                value={filterValue}
+                                onChange={(e) => setFilterValue(e.target.value)}
+                                options={[
+                                    { label: filterable.placeholder || "All", value: "" },
+                                    ...(filterable.options || []).map(opt => ({ label: opt.label, value: opt.value }))
+                                ]}
+                            />
+                        </div>
                     )}
                 </div>
             )}
 
-            {/* Table */}
+            {/* Table Container */}
             <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm overflow-hidden">
-                <table className="w-full text-sm text-left">
-                    <thead className="bg-zinc-50 dark:bg-zinc-800/50 text-zinc-500 uppercase font-medium">
-                        <tr>
-                            {columns.map((column, index) => (
-                                <th
-                                    key={index}
-                                    className={`px-6 py-4 ${column.align === "right" ? "text-right" :
-                                        column.align === "center" ? "text-center" :
-                                            "text-left"
-                                        }`}
-                                >
-                                    {column.header}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
-                        {isLoading ? (
+                {/* Scrollable Table Wrapper */}
+                <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                        <thead className="bg-zinc-50 dark:bg-zinc-800/50 text-zinc-500 uppercase font-medium">
                             <tr>
-                                <td colSpan={colSpan} className="px-6 py-8 text-center text-zinc-500">
-                                    {loadingMessage}
-                                </td>
+                                {columns.map((column, index) => (
+                                    <th
+                                        key={index}
+                                        className={`px-6 py-4 whitespace-nowrap ${column.align === "right" ? "text-right" :
+                                            column.align === "center" ? "text-center" :
+                                                "text-left"
+                                            }`}
+                                    >
+                                        {column.header}
+                                    </th>
+                                ))}
                             </tr>
-                        ) : filteredData.length === 0 ? (
-                            <tr>
-                                <td colSpan={colSpan} className="px-6 py-8 text-center text-zinc-500">
-                                    {emptyMessage}
-                                </td>
-                            </tr>
-                        ) : (
-                            filteredData.map((row, rowIndex) => (
-                                <tr
-                                    key={rowIndex}
-                                    className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
-                                >
-                                    {columns.map((column, colIndex) => (
-                                        <td
-                                            key={colIndex}
-                                            className={`px-6 py-4 ${column.align === "right" ? "text-right" :
-                                                column.align === "center" ? "text-center" :
-                                                    "text-left"
-                                                }`}
-                                        >
-                                            {column.render
-                                                ? column.render(row)
-                                                : column.accessor
-                                                    ? row[column.accessor]
-                                                    : null
-                                            }
-                                        </td>
-                                    ))}
+                        </thead>
+                        <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
+                            {isLoading ? (
+                                <tr>
+                                    <td colSpan={colSpan} className="px-6 py-8 text-center text-zinc-500">
+                                        {loadingMessage}
+                                    </td>
                                 </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                            ) : filteredData.length === 0 ? (
+                                <tr>
+                                    <td colSpan={colSpan} className="px-6 py-8 text-center text-zinc-500">
+                                        {emptyMessage}
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredData.map((row, rowIndex) => (
+                                    <tr
+                                        key={rowIndex}
+                                        className="hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors"
+                                    >
+                                        {columns.map((column, colIndex) => (
+                                            <td
+                                                key={colIndex}
+                                                className={`px-6 py-4 whitespace-nowrap ${column.align === "right" ? "text-right" :
+                                                    column.align === "center" ? "text-center" :
+                                                        "text-left"
+                                                    }`}
+                                            >
+                                                {column.render
+                                                    ? column.render(row)
+                                                    : column.accessor
+                                                        ? row[column.accessor]
+                                                        : null
+                                                }
+                                            </td>
+                                        ))}
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
                 {/* Pagination Footer */}
                 {pagination && !isLoading && data.length > 0 && (
                     <div className="border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 px-6 py-4">
-                        <div className="flex items-center justify-between">
-                            <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="text-sm text-zinc-600 dark:text-zinc-400 text-center sm:text-left">
                                 {pagination.totalItems ? (
                                     <span>
                                         Showing {((pagination.currentPage - 1) * 10) + 1} to{" "}
@@ -185,7 +187,7 @@ export default function Table({
                                     </span>
                                 )}
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-center gap-2">
                                 <Button
                                     variant="secondary"
                                     size="sm"
@@ -196,8 +198,8 @@ export default function Table({
                                     Previous
                                 </Button>
 
-                                {/* Page Numbers */}
-                                <div className="flex items-center gap-1">
+                                {/* Page Numbers - Hidden on mobile */}
+                                <div className="hidden sm:flex items-center gap-1">
                                     {Array.from({ length: pagination.totalPages }, (_, i) => i + 1)
                                         .filter(pageNum => {
                                             // Show first page, last page, current page, and pages around current
@@ -217,8 +219,8 @@ export default function Table({
                                                     <button
                                                         onClick={() => pagination.onPageChange(pageNum)}
                                                         className={`h-8 w-8 rounded-md text-sm font-medium transition-colors ${pageNum === pagination.currentPage
-                                                                ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900"
-                                                                : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                                                            ? "bg-zinc-900 text-zinc-50 dark:bg-zinc-100 dark:text-zinc-900"
+                                                            : "text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800"
                                                             }`}
                                                     >
                                                         {pageNum}
@@ -227,6 +229,11 @@ export default function Table({
                                             )
                                         })}
                                 </div>
+
+                                {/* Mobile Page Indicator */}
+                                <span className="text-sm font-medium sm:hidden">
+                                    {pagination.currentPage} / {pagination.totalPages}
+                                </span>
 
                                 <Button
                                     variant="secondary"
