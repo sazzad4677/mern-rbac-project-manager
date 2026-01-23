@@ -15,7 +15,7 @@ export const logoutUserAPI = async (): Promise<{ message: string }> => {
 
 // Invite
 export const inviteUserAPI = async (data: InviteUserPayload): Promise<{ message: string; data: { token: string } }> => {
-    const response = await api.post<{ message: string; data: { token: string } }>("/users/invite", data)
+    const response = await api.post<{ message: string; data: { token: string } }>("/auth/invite", data)
     return response.data
 }
 
